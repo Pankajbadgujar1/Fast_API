@@ -19,3 +19,5 @@ def about():
 def view():
     data = load_data()
     return data 
+
+# Learn Path parameter and Query parameter
