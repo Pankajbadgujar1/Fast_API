@@ -1,13 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, computed_field, Field
+from pydantic import BaseModel, computed_field, Field, field_validator
 from typing import Literal, Annotated
 import pickle
 import pandas as pd
 
 model = None
 try:
-    with open("model.pkl", "rb") as f:
+    with open("model/model.pkl", "rb") as f:
         model = pickle.load(f)
 except Exception as e:
     print("Warning: failed to load model.pkl:", e)
@@ -33,7 +33,16 @@ class UserInput(BaseModel):
     smoker: Annotated[bool, Field(..., description=" Whether the user is a smoker or not ", example=False)]
     city: Annotated[str, Field(..., description=" City of the user ", example="New York")]
     occupation: Annotated[str, Field(..., description=" Occupation of the user ", example="salaried")]
-      
+
+
+    @field_validator('city')
+    @classmethod
+    def validate_city(cls, v: str) -> str:
+        v = v.strip().title()
+        return v
+          
+        
+
     @computed_field
     @property
     def bmi(self) -> float:
