@@ -147,6 +147,3 @@ def delete_patient(patient_id: str):
     save_data(data)
 
     return JSONResponse(status_code=200, content={"message": "Patient record deleted successfully."})
-
-# To run the app: uvicorn main:app --reload
-# Complete code in main.py This project is over here.
