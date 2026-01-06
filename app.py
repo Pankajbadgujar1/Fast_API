@@ -41,3 +41,5 @@ def home():
 @app.get("/health")
 def health_check():
     return {"status": "ok", "version": MODEL_VERSION}
+
+#now we create docker file 
