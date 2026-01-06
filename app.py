@@ -1,14 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
-
-
+from model.predict import predict_output, MODEL_VERSION,model
 from schema.user_input import UserInput
+from schema.prediction_response import PredictionResponse
 
 app = FastAPI()
-
-
-
-@app.post("/predict")
+@app.post("/predict" , response_model=PredictionResponse)
 def predict_premium(data: UserInput):
     # normalize occupation synonyms to the allowed categories
     _occ_map = {
@@ -31,10 +28,11 @@ def predict_premium(data: UserInput):
         "income_lpa": data.income_lpa,
         "occupation": norm_occ,
     }
-
-    prediction = predict_output(input_data)
-    return JSONResponse(status_code=200 , content={'predicted_category': prediction })
-
+    try:
+        prediction = predict_output(input_data)
+        return JSONResponse(status_code=200 , content={'predicted_category': prediction })
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Prediction failed: {e}")
 
 @app.get('/')
 def home():
